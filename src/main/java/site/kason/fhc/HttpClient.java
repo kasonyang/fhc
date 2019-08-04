@@ -1,7 +1,16 @@
 package site.kason.fhc;
 
 import okhttp3.OkHttpClient;
+import site.kason.fhc.internal.MemoryCookieJar;
+import site.kason.fhc.internal.TrustUtil;
 
+import java.io.IOException;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class HttpClient {
@@ -15,11 +24,41 @@ public class HttpClient {
      * @return
      */
     public static HttpClient instance() {
-        return new HttpClient();
+        return config().newClient();
     }
 
-    private HttpClient() {
-        okHttpClient = new OkHttpClient();
+    public static Configuration config() {
+        return new Configuration();
+    }
+
+    HttpClient(Configuration conf) {
+        OkHttpClient.Builder ob = new OkHttpClient.Builder();
+        Proxy httpProxy = conf.httpProxy();
+        Proxy httpsProxy = conf.httpsProxy();
+        ob.proxySelector(new ProxySelector() {
+            @Override
+            public List<Proxy> select(URI uri) {
+                List<Proxy> proxies = new LinkedList<>();
+                String sch = uri.getScheme();
+                if ("https".equals(sch)) {
+                    proxies.add(httpsProxy);
+                } else if ("http".equals(sch)) {
+                    proxies.add(httpProxy);
+                }
+                return proxies;
+            }
+
+            @Override
+            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+            }
+        });
+        if (conf.trustAll()) {
+            ob.sslSocketFactory(TrustUtil.createTrustAllSSLSocketFactory());
+        }
+        if (conf.cookieEnabled()) {
+            ob.cookieJar(new MemoryCookieJar());
+        }
+        okHttpClient = ob.build();
     }
 
     public void addHeader(String name,String value) {
