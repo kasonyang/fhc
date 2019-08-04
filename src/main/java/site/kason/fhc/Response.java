@@ -2,7 +2,7 @@ package site.kason.fhc;
 
 import java.util.List;
 
-public class Response {
+public class Response implements AutoCloseable {
 
     okhttp3.Response response;
 
@@ -34,4 +34,8 @@ public class Response {
     }
 
 
+    @Override
+    public void close(){
+        this.response.close();
+    }
 }
