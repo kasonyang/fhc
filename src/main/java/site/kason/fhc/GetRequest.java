@@ -3,6 +3,8 @@ package site.kason.fhc;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
+import java.util.function.Consumer;
+
 public class GetRequest extends AbstractRequest {
 
     private NamedValueList headers = new NamedValueList();
@@ -28,6 +30,12 @@ public class GetRequest extends AbstractRequest {
         }
         Request req = rb.url(url).get().build();
         return execute(req);
+    }
+
+    public void execute(String url, Consumer<Response> consumer) {
+        try(Response rsp = execute(url)) {
+            consumer.accept(rsp);
+        }
     }
 
 }

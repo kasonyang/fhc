@@ -4,6 +4,8 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
+import java.util.function.Consumer;
+
 public class PostRequest extends AbstractRequest {
 
     private NamedValueList headers = new NamedValueList();
@@ -45,6 +47,12 @@ public class PostRequest extends AbstractRequest {
         }
         Request req = rb.url(url).post(feb.build()).build();
         return execute(req);
+    }
+
+    public void execute(String url, Consumer<Response> consumer) {
+        try(Response resp = execute(url)){
+            consumer.accept(resp);
+        }
     }
 
 }
