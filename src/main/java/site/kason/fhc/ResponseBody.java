@@ -8,7 +8,7 @@ import org.jsoup.nodes.Document;
 import java.io.InputStream;
 import java.io.Reader;
 
-public class ResponseBody {
+public class ResponseBody implements AutoCloseable {
 
     okhttp3.ResponseBody body;
 
@@ -46,6 +46,11 @@ public class ResponseBody {
 
     public Document jsoup() {
         return Jsoup.parse(string());
+    }
+
+    @Override
+    public void close() throws Exception {
+        body.close();
     }
 
 }

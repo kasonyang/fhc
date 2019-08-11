@@ -1,8 +1,19 @@
 package site.kason.fhc;
 
 import okhttp3.OkHttpClient;
+import site.kason.fhc.internal.MemoryCookieJar;
+import site.kason.fhc.internal.TrustUtil;
 
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class HttpClient {
 
@@ -15,11 +26,41 @@ public class HttpClient {
      * @return
      */
     public static HttpClient instance() {
-        return new HttpClient();
+        return config().newClient();
     }
 
-    private HttpClient() {
-        okHttpClient = new OkHttpClient();
+    public static Configuration config() {
+        return new Configuration();
+    }
+
+    HttpClient(Configuration conf) {
+        OkHttpClient.Builder ob = new OkHttpClient.Builder();
+        Proxy httpProxy = conf.httpProxy();
+        Proxy httpsProxy = conf.httpsProxy();
+        ob.proxySelector(new ProxySelector() {
+            @Override
+            public List<Proxy> select(URI uri) {
+                List<Proxy> proxies = new LinkedList<>();
+                String sch = uri.getScheme();
+                if ("https".equals(sch)) {
+                    proxies.add(httpsProxy);
+                } else if ("http".equals(sch)) {
+                    proxies.add(httpProxy);
+                }
+                return proxies;
+            }
+
+            @Override
+            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+            }
+        });
+        if (conf.trustAll()) {
+            ob.sslSocketFactory(TrustUtil.createTrustAllSSLSocketFactory());
+        }
+        if (conf.cookieEnabled()) {
+            ob.cookieJar(new MemoryCookieJar());
+        }
+        okHttpClient = ob.build();
     }
 
     public void addHeader(String name,String value) {
@@ -31,20 +72,19 @@ public class HttpClient {
     }
 
     public PostRequest post() {
-        PostRequest pr = new PostRequest(okHttpClient);
-        for(NamedValue nv:headers.getAllNamedValues()) {
-            pr.addField(nv.getName(),nv.getValue());
-        }
-        return pr;
+        return createPost(null);
     }
 
-    public Response post(String url, Map<String,String> data) {
-        PostRequest p = post();
-        for(NamedValue nv:headers.getAllNamedValues()) {
-            p.addHeader(nv.getName(),nv.getValue());
-        }
-        data.forEach(p::addField);
-        return p.execute(url);
+    public Response post(String url, @Nullable Map<String, String> data) {
+        return createPost(data).execute(url);
+    }
+
+    public void post(String url, @Nullable Map<String, String> data, Consumer<Response> consumer) {
+        createPost(data).execute(url, consumer);
+    }
+
+    public void post(String url, Consumer<Response> consumer) {
+        createPost(null).execute(url, consumer);
     }
 
     public GetRequest get() {
@@ -57,6 +97,21 @@ public class HttpClient {
 
     public Response get(String url) {
         return get().execute(url);
+    }
+
+    public void get(String url, Consumer<Response> consumer) {
+        get().execute(url, consumer);
+    }
+
+    private PostRequest createPost(@Nullable Map<String, String> data) {
+        PostRequest pr = new PostRequest(okHttpClient);
+        for (NamedValue nv : headers.getAllNamedValues()) {
+            pr.addField(nv.getName(), nv.getValue());
+        }
+        if (data != null) {
+            data.forEach(pr::addField);
+        }
+        return pr;
     }
 
 }
