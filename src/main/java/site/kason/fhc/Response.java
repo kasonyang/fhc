@@ -13,7 +13,7 @@ public class Response implements AutoCloseable {
         this.body = new ResponseBody(response.body());
     }
 
-    public int code() {
+    public int status() {
         return response.code();
     }
 

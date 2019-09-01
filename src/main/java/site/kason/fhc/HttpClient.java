@@ -25,7 +25,7 @@ public class HttpClient {
      * create an new HttpClient instance
      * @return
      */
-    public static HttpClient instance() {
+    public static HttpClient newClient() {
         return config().newClient();
     }
 
@@ -43,9 +43,13 @@ public class HttpClient {
                 List<Proxy> proxies = new LinkedList<>();
                 String sch = uri.getScheme();
                 if ("https".equals(sch)) {
-                    proxies.add(httpsProxy);
+                    if (httpsProxy != null) {
+                        proxies.add(httpsProxy);
+                    }
                 } else if ("http".equals(sch)) {
-                    proxies.add(httpProxy);
+                    if (httpProxy != null) {
+                        proxies.add(httpProxy);
+                    }
                 }
                 return proxies;
             }
