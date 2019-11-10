@@ -3,27 +3,20 @@ package site.kason.fhc;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class PostRequest extends AbstractRequest {
 
     private NamedValueList headers = new NamedValueList();
 
-    private NamedValueList fields = new NamedValueList();
+    private RequestBodyGenerator requestBodyGenerator;
 
-    public PostRequest(OkHttpClient okHttpClient) {
+    public PostRequest(OkHttpClient okHttpClient,@Nullable RequestBodyGenerator requestBodyGenerator) {
         super(okHttpClient);
-    }
-
-    public PostRequest addField(String name, String value) {
-        fields.add(new NamedValue(name, value));
-        return this;
-    }
-
-    public PostRequest removeField(String name) {
-        fields.remove(name);
-        return this;
+        this.requestBodyGenerator = requestBodyGenerator;
     }
 
     public PostRequest addHeader(String name, String value) {
@@ -41,11 +34,11 @@ public class PostRequest extends AbstractRequest {
         for (NamedValue nv : headers.getAllNamedValues()) {
             rb.addHeader(nv.getName(), nv.getValue());
         }
-        FormBody.Builder feb = new FormBody.Builder();
-        for (NamedValue nv : fields.getAllNamedValues()) {
-            feb.add(nv.getName(), nv.getValue());
+        RequestBody body = null;
+        if (requestBodyGenerator != null) {
+            body = requestBodyGenerator.generateRequestBody();
         }
-        Request req = rb.url(url).post(feb.build()).build();
+        Request req = rb.url(url).post(body).build();
         return execute(req);
     }
 
