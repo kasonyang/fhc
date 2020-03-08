@@ -72,6 +72,12 @@ public class HttpClient {
         headers.add(new NamedValue(name,value));
     }
 
+    public void addHeaders(Map<String,String> headers) {
+        for (Map.Entry<String, String> h: headers.entrySet()) {
+            addHeader(h.getKey(), h.getValue());
+        }
+    }
+
     public void removeHeader(String name) {
         headers.remove(name);
     }
