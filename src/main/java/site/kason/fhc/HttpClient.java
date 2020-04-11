@@ -23,13 +23,17 @@ public class HttpClient {
     private final NamedValueList headers = new NamedValueList();
 
     /**
-     * create an new HttpClient instance
-     * @return
+     * Create a new HttpClient instance.
+     * @return the new client instance
      */
     public static HttpClient newClient() {
         return config().newClient();
     }
 
+    /**
+     * Create a new Configuration instance.
+     * @return the new configuration instance
+     */
     public static Configuration config() {
         return new Configuration();
     }
@@ -68,40 +72,87 @@ public class HttpClient {
         okHttpClient = ob.build();
     }
 
+    /**
+     * Add header for all requests.
+     * @param name header name
+     * @param value header value
+     */
     public void addHeader(String name,String value) {
         headers.add(new NamedValue(name,value));
     }
 
+    /**
+     * Add headers for all requests.
+     * @param headers headers
+     */
     public void addHeaders(Map<String,String> headers) {
         for (Map.Entry<String, String> h: headers.entrySet()) {
             addHeader(h.getKey(), h.getValue());
         }
     }
 
+    /**
+     * Remove header added by addHeader/addHeaders.
+     * @param name header name
+     */
     public void removeHeader(String name) {
         headers.remove(name);
     }
 
+    /**
+     * Make a post request
+     * @param url the url to request
+     * @param data the request body
+     * @return the response
+     */
     public Response post(String url, @Nullable Map<String, String> data) {
         return createPost(data).execute(url);
     }
 
+    /**
+     * Make a post request
+     * @param url the url to request
+     * @param data the request body
+     * @param consumer the response consumer
+     */
     public void post(String url, @Nullable Map<String, String> data, Consumer<Response> consumer) {
         createPost(data).execute(url, consumer);
     }
 
+    /**
+     * Make a post request
+     * @param url the url to request
+     * @param data the request body
+     * @return the response
+     */
     public Response post(String url,@Nullable byte[] data) {
         return createPost(data).execute(url);
     }
 
+    /**
+     * Make a post request
+     * @param url the url to request
+     * @param data the request body
+     * @param consumer the response consumer
+     */
     public void post(String url, @Nullable byte[] data, Consumer<Response> consumer) {
         createPost(data).execute(url, consumer);
     }
 
+    /**
+     * Make a post request
+     * @param url the url to request
+     * @return the response
+     */
     public Response post(String url) {
         return post(url, (byte[])null);
     }
 
+    /**
+     * Make a post request
+     * @param url the url to request
+     * @param consumer the response
+     */
     public void post(String url, Consumer<Response> consumer) {
         createPost((RequestBodyGenerator) null).execute(url, consumer);
     }
@@ -114,10 +165,20 @@ public class HttpClient {
         return gr;
     }
 
+    /**
+     * Make a get request
+     * @param url the url to request
+     * @return the response
+     */
     public Response get(String url) {
         return get().execute(url);
     }
 
+    /**
+     * Make a get request
+     * @param url the url to request
+     * @param consumer the response consumer
+     */
     public void get(String url, Consumer<Response> consumer) {
         get().execute(url, consumer);
     }
