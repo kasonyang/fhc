@@ -157,21 +157,13 @@ public class HttpClient {
         createPost((RequestBodyGenerator) null).execute(url, consumer);
     }
 
-    private GetRequest get() {
-        GetRequest gr = new GetRequest(okHttpClient);
-        for(NamedValue nv:headers.getAllNamedValues()) {
-            gr.addHeader(nv.getName(),nv.getValue());
-        }
-        return gr;
-    }
-
     /**
      * Make a get request
      * @param url the url to request
      * @return the response
      */
     public Response get(String url) {
-        return get().execute(url);
+        return createGet().execute(url);
     }
 
     /**
@@ -180,7 +172,15 @@ public class HttpClient {
      * @param consumer the response consumer
      */
     public void get(String url, Consumer<Response> consumer) {
-        get().execute(url, consumer);
+        createGet().execute(url, consumer);
+    }
+
+    private GetRequest createGet() {
+        GetRequest gr = new GetRequest(okHttpClient);
+        for(NamedValue nv:headers.getAllNamedValues()) {
+            gr.addHeader(nv.getName(),nv.getValue());
+        }
+        return gr;
     }
 
     private PostRequest createPost(@Nullable Map<String, String> data) {
