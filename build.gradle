@@ -1,5 +1,6 @@
 apply plugin:'java'
 apply from:'gradle/version.gradle'
+apply from:'gradle/maven-publish.gradle'
 
 repositories { 
     mavenCentral()
