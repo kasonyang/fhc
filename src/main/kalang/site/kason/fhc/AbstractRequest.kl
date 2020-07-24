@@ -1,21 +1,20 @@
-package site.kason.fhc;
+
 
 
 import lombok.SneakyThrows;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
-public abstract class AbstractRequest {
+abstract class {
 
     protected OkHttpClient okHttpClient;
 
-    public AbstractRequest(OkHttpClient okHttpClient) {
+    constructor(OkHttpClient okHttpClient) {
         this.okHttpClient = okHttpClient;
     }
 
-    @SneakyThrows
     protected Response execute(Request req) {
-        okhttp3.Response okResp = okHttpClient.newCall(req).execute();
+        val okResp = okHttpClient.newCall(req).execute();
         return new Response(okResp);
     }
 

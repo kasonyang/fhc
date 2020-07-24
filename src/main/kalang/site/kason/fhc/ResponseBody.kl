@@ -1,55 +1,50 @@
-package site.kason.fhc;
+
 
 import com.fasterxml.jackson.databind.*;
 import lombok.SneakyThrows;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.InputStream;
-import java.io.Reader;
+import okhttp3.ResponseBody as OkResponseBody;
 
-public class ResponseBody implements AutoCloseable {
+class implements AutoCloseable {
 
-    okhttp3.ResponseBody body;
+    protected OkResponseBody body;
 
-    public ResponseBody(okhttp3.ResponseBody body) {
+    constructor(OkResponseBody body) {
         this.body = body;
     }
 
-    public long contentLength() {
+    long contentLength() {
         return body.contentLength();
     }
 
-    public InputStream byteStream() {
+    InputStream byteStream() {
         return body.byteStream();
     }
 
-    @SneakyThrows
-    public byte[] bytes() {
+    byte[] bytes() {
         return body.bytes();
     }
 
-    public Reader charStream() {
+    Reader charStream() {
         return body.charStream();
     }
 
-    @SneakyThrows
-    public String string() {
+    String string() {
         return body.string();
     }
 
-    @SneakyThrows
-    public JsonNode json() {
+    JsonNode json() {
         ObjectMapper om = new ObjectMapper();
         return om.readTree(bytes());
     }
 
-    public Document jsoup() {
+    Document jsoup() {
         return Jsoup.parse(string());
     }
 
-    @Override
-    public void close() throws Exception {
+    override void close() {
         body.close();
     }
 

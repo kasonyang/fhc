@@ -1,41 +1,38 @@
-package site.kason.fhc;
+import okhttp3.Response as OkResponse;
 
-import java.util.List;
+class implements AutoCloseable {
 
-public class Response implements AutoCloseable {
+    protected OkResponse response;
 
-    okhttp3.Response response;
+    protected ResponseBody? body;
 
-    ResponseBody body;
-
-    public Response(okhttp3.Response response) {
+    constructor(OkResponse response) {
         this.response = response;
-        this.body = new ResponseBody(response.body());
+        val okBody = response.body();
+        this.body = okBody == null ? null : new ResponseBody(okBody);
     }
 
-    public int status() {
+    int status() {
         return response.code();
     }
 
-    public List<String> headers(String name) {
+    List<String> headers(String name) {
         return response.headers(name);
     }
 
-    public String header(String name) {
+    String? header(String name) {
         return response.header(name);
     }
 
-    public String header(String name, String defaultValue) {
+    String? header(String name, String defaultValue) {
         return response.header(name, defaultValue);
     }
 
-    public ResponseBody body() {
+    ResponseBody? body() {
         return body;
     }
 
-
-    @Override
-    public void close(){
+    override void close(){
         this.response.close();
     }
 }

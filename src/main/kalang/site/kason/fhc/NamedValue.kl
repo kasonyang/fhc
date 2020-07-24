@@ -1,14 +1,12 @@
-package site.kason.fhc;
+class {
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+    String name;
 
-@Getter
-@AllArgsConstructor
-public class NamedValue {
+    String value;
 
-    private String name;
-
-    private String value;
+    constructor(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
 
 }

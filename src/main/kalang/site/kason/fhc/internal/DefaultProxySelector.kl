@@ -1,0 +1,33 @@
+
+class extends ProxySelector {
+
+    private Proxy? httpProxy;
+
+    private Proxy? httpsProxy;
+
+    constructor(Proxy? httpProxy, Proxy? httpsProxy) {
+        this.httpProxy = httpProxy;
+        this.httpsProxy = httpsProxy;
+    }
+
+    override List<Proxy> select(URI uri) {
+        val httpProxy = this.httpProxy;
+        val httpsProxy = this.httpsProxy;
+        List<Proxy> proxies = new LinkedList();
+        String sch = uri.getScheme();
+        if ("https".equals(sch)) {
+            if (httpsProxy != null) {
+                proxies.add(httpsProxy);
+            }
+        } else if ("http".equals(sch)) {
+            if (httpProxy != null) {
+                proxies.add(httpProxy);
+            }
+        }
+        return proxies;
+    }
+
+    override void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+    }
+
+}
