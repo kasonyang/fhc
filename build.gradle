@@ -1,18 +1,16 @@
 apply plugin:'java'
+apply from:'gradle/kalang.gradle'
 apply from:'gradle/version.gradle'
 apply from:'gradle/maven-publish.gradle'
 
 repositories { 
     mavenCentral()
-    maven { url "https://jitpack.io" }
 }
 
 dependencies {
     compile 'com.google.code.findbugs:jsr305:3.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.14.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
-    compileOnly 'org.projectlombok:lombok:1.18.8'
-    annotationProcessor 'org.projectlombok:lombok:1.18.8'
     compile 'org.jsoup:jsoup:1.10.2'
     testCompile 'junit:junit:4.12'
 }
