@@ -23,7 +23,7 @@ class kalang implements Plugin<Project> {
             for(f in project.configurations.compile.files){
                 cps.add(f.getAbsolutePath());
             }
-            String cp = String.join(";",cps);
+            String cp = String.join(File.pathSeparator,cps);
             def args = ["--output-dir",outDir.getAbsolutePath(),"--classpath",cp,klSrc.getAbsolutePath()];
             int result = new Kalangc().run(args as String[])
             if (result!=0){
