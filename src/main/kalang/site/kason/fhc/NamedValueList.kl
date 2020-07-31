@@ -12,7 +12,7 @@ class {
     }
 
     void remove(String name) {
-        LinkedList<NamedValue> ls = new LinkedList();
+        val ls = new LinkedList<NamedValue>();
         for (v in list) {
             if (!name.equals(v.getName())) {
                 ls.add(v);

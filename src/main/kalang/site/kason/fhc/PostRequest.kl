@@ -39,12 +39,12 @@ class extends AbstractRequest {
         if (rbg != null) {
             body = rbg.generateRequestBody();
         }
-        Request req = rb.url(url).post(body).build();
+        val req = rb.url(url).post(body).build();
         return execute(req);
     }
 
     void execute(String url, Consumer<Response> consumer) {
-        try(Response resp = execute(url)){
+        try(val resp = execute(url)){
             consumer.accept(resp);
         }
     }

@@ -154,7 +154,7 @@ class {
     }
 
     private GetRequest createGet() {
-        GetRequest gr = new GetRequest(okHttpClient);
+        val gr = new GetRequest(okHttpClient);
         for(nv in headers.getAllNamedValues()) {
             gr.addHeader(nv.getName(),nv.getValue());
         }
@@ -162,7 +162,7 @@ class {
     }
 
     private PostRequest createPost(Map<String, String>? data) {
-        UrlEncodedRequestBodyGenerator rbg = new UrlEncodedRequestBodyGenerator();
+        val rbg = new UrlEncodedRequestBodyGenerator();
         if (data != null) {
             data.forEach(rbg::addField);
         }
@@ -175,7 +175,7 @@ class {
     }
 
     private PostRequest createPost(RequestBodyGenerator? requestBodyGenerator) {
-        PostRequest pr = new PostRequest(okHttpClient, requestBodyGenerator);
+        val pr = new PostRequest(okHttpClient, requestBodyGenerator);
         for (nv in headers.getAllNamedValues()) {
             pr.addHeader(nv.getName(), nv.getValue());
         }

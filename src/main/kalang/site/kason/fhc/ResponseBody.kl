@@ -36,7 +36,7 @@ class implements AutoCloseable {
     }
 
     JsonNode json() {
-        ObjectMapper om = new ObjectMapper();
+        val om = new ObjectMapper();
         return om.readTree(bytes());
     }
 

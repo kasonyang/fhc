@@ -24,11 +24,11 @@ class extends AbstractRequest {
     }
 
     Response execute(String url) {
-        Request$Builder rb = new Request$Builder();
+        val rb = new Request$Builder();
         for (nv in headers.getAllNamedValues()) {
             rb.addHeader(nv.getName(), nv.getValue());
         }
-        Request req = rb.url(url).get().build();
+        val req = rb.url(url).get().build();
         return execute(req);
     }
 
